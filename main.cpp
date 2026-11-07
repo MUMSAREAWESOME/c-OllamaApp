@@ -52,7 +52,7 @@ class Yuki{
       std::cout << "Yuki: ";
       
       for (const char& i : string){
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         std::cout << i << std::flush;
       }
       std::cout << std::endl;
@@ -97,7 +97,7 @@ void clearScreen();
 
 void chatLoop(Yuki& yuki){
   int messageCount = 0;
-
+  bool firstRun = true;
   std::string model;
   char modelChoice;
 
@@ -117,11 +117,12 @@ void chatLoop(Yuki& yuki){
     }
     else if (modelChoice == 'O'){
       std::cout << "Enter model name exactly: ";
+      std::cin.ignore(); // Explaination below
       std::getline(std::cin, model);
       break;
     }
     else{
-      std::cout << "Invalid chouice... Try again" << std::endl;
+      std::cout << "Invalid choice... Try again\n";
       continue;
     }
   }
@@ -129,6 +130,10 @@ void chatLoop(Yuki& yuki){
   std::cout << "Welcome to the chat app! Your current model is " << model << ". We hope you enjoy your visit!\n";
 
   while (true){
+    if (firstRun){
+      firstRun = false;
+      continue;
+    }
 
     if (messageCount == 10){
       yuki.gainRomance(0.5);
@@ -137,35 +142,47 @@ void chatLoop(Yuki& yuki){
     }
 
     std::string prompt;
-
-    std::cout << "YOU: ";
     
-    std::getline(std::cin, prompt);
+    char choice;
     
-    if (prompt == "q" || prompt == "Q"){
+    std::cout << "What would you like to do: (q/Q)uit, c(L)ear, (S)ysprompt, (C)hat\n" << "YOU: ";
+    
+    std::cin >> choice;
+    
+    if (choice == 'q' || choice == 'Q'){
       break;
     }
-    else if (prompt == "clear"){
+    else if (choice == 'L'){
       clearScreen();
       continue;
     }
-    else if (prompt == "sysprompt"){
+    else if (choice == 'S'){
       yuki.printStats();
       continue;
     }
+    else if (choice == 'C'){
+      std::cout << "Enter prompt\n"<< "YOU: ";
 
-    std::string response;
+      std::cin.ignore(); // This ignores the last character in the buffer and makes it pause
+      
+      std::getline(std::cin, prompt);
 
-    try{
-      response = yuki.conversationResponse(model, prompt);
+      std::string response;
+
+      try{
+        response = yuki.conversationResponse(model, prompt);
+      }
+      catch(ollama::exception& e){
+        clearScreen();
+        std::cerr << e.what() << std::endl;
+        break;
+      }
+
+      yuki.typeResponse(response);
     }
-    catch(ollama::exception& e){
-      clearScreen();
-      std::cerr << e.what() << std::endl;
-      break;
+    else{
+      continue;
     }
-
-    yuki.typeResponse(response);    
   }
 }
 
