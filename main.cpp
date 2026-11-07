@@ -103,11 +103,11 @@ void chatLoop(Yuki& yuki){
 
   while (true){
   
-  std::cout << "Please select the model you want to use: (C)rown/darkidol, (S)theno-v3.2, (O)ther model" << std::endl << "YOU: ";
+    std::cout << "Please select the model you want to use: (C)rown/darkidol, (S)theno-v3.2, (O)ther model" << std::endl << "YOU: ";
 
-  std::cin >> modelChoice;
+    std::cin >> modelChoice;
 
-    if (model == 'C'){
+    if (modelChoice == 'C'){
       model = "crown/darkidol";
       break;
     }
