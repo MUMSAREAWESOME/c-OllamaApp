@@ -99,10 +99,32 @@ void chatLoop(Yuki& yuki){
   int messageCount = 0;
 
   std::string model;
-  
-  std::cout << "Please select the model you want to use." << std::endl << "YOU: ";
+  char modelChoice;
 
-  std::getline(std::cin, model);
+  while (true){
+  
+  std::cout << "Please select the model you want to use: (C)rown/darkidol, (S)theno-v3.2, (O)ther model" << std::endl << "YOU: ";
+
+  std::cin >> modelChoice;
+
+    if (model == 'C'){
+      model = "crown/darkidol";
+      break;
+    }
+    else if (modelChoice == 'S'){
+      model = "hf.co/bartowski/L3-8B-Stheno-v3.2-GGUF:Q4_K_M ";
+      break;
+    }
+    else if (modelChoice == 'O'){
+      std::cout << "Enter model name exactly: ";
+      std::getline(std::cin, model);
+      break;
+    }
+    else{
+      std::cout << "Invalid chouice... Try again" << std::endl;
+      continue;
+    }
+  }
 
   std::cout << "Welcome to the chat app! Your current model is " << model << ". We hope you enjoy your visit!\n";
 
